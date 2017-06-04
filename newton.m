@@ -17,8 +17,6 @@ function p = reduce(x, dfs, current_step)
         differencies(1, i) = coef / (x(i+current_step) - x(i));
     end
 
-    differencies
-
     % cut condition
     if size(differencies)(2) == 1
         p = @(n) differencies(1) * polynomial(n, x(1:end-1));
