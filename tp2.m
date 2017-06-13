@@ -33,6 +33,9 @@ function plot_func(f, label, linestyle='--')
 end
 
 
+%-----------------------------------------------------------------------------
+% using equidistant points
+
 % plots the runge function
 plot_func(@runge, 'runge', '-');
 
@@ -48,9 +51,11 @@ end
 
 % sets plot legends
 legend(legend_info);
+saveas(gcf, 'newton.jpg');
+
 
 %-----------------------------------------------------------------------------
-
+% using chebyshev nodes
 
 hold off;
 current_plt = 1;
@@ -59,15 +64,41 @@ legend_info = {};
 % plots the runge function
 plot_func(@runge, 'runge', '-');
 
-% builds and plots newton polynomials for each degree
+% builds and plots newton polynomials for each degree using the Chebyshev nodes
+array_points = [4 8 12 16];
+for num_points = array_points
+    x = chebyshev_nodes(num_points+1);
+    assert(size(x) == [1 num_points+1]);
+
+    p = newton(x, runge(x));
+    plot_func(p, strcat('grado ', num2str(num_points)) );
+end
+
+% sets plot legends
+legend(legend_info);
+saveas(gcf, 'chebyshev.jpg');
+
+
+%-----------------------------------------------------------------------------
+% spline using chebyshev nodes
+
+hold off;
+current_plt = 1;
+legend_info = {};
+
+% plots the runge function
+plot_func(@runge, 'runge', '-');
+
+% builds and plots newton polynomials for each degree using the Chebyshev nodes
 degrees = [4 8 12 16];
 for degree = degrees
     x = chebyshev_nodes(degree+1);
     assert(size(x) == [1 degree+1]);
 
-    p = newton(x, runge(x));
-    plot_func(p, strcat('grado ', num2str(degree)) );
+    p = spline(x, runge(x));
+    plot_func(@(x) ppval(p, x), strcat(num2str(degree), ' puntos') );
 end
 
 % sets plot legends
 legend(legend_info);
+saveas(gcf, 'splines.jpg');
